@@ -55,28 +55,36 @@ petbottlesRouter.get("/pet_bottle/:id", (req, res) => {
   });
 });
 
-// Edit a specific Pet Bottle record by ID
 petbottlesRouter.put("/edit_pet_bottle/:id", (req, res) => {
   const id = req.params.id;
   const { collection_point, weight, date_collected, description, contact_person, contact_email, address, collection_method } = req.body;
+  console.log("Updating Pet Bottle:", { collection_point, weight, date_collected, description, contact_person, contact_email, address, collection_method, id }); // Debug log
 
   const sql = "UPDATE pet_bottles SET collection_point = ?, weight = ?, date_collected = ?, description = ?, contact_person = ?, contact_email = ?, address = ?, collection_method = ? WHERE id = ?";
   const values = [collection_point, weight, date_collected, description, contact_person, contact_email, address, collection_method, id];
 
   con.query(sql, values, (err, result) => {
-    if (err) return res.json({ Status: false, Error: err.sqlMessage || err });
+    if (err) {
+      console.error("Error updating Pet Bottle:", err); // Debug error log
+      return res.json({ Status: false, Error: err.sqlMessage || err });
+    }
     return res.json({ Status: true });
   });
 });
 
-// Delete a specific Pet Bottle record by ID
+
 petbottlesRouter.delete("/delete_pet_bottle/:id", (req, res) => {
   const id = req.params.id;
+  console.log("Deleting ID:", id); // Debug log
   const sql = "DELETE FROM pet_bottles WHERE id = ?";
   con.query(sql, [id], (err, result) => {
-    if (err) return res.json({ Status: false, Error: "Query Error" });
+    if (err) {
+      console.error("Error executing query:", err); // Log the error
+      return res.json({ Status: false, Error: "Query Error" });
+    }
     return res.json({ Status: true });
   });
 });
+
 
 export { petbottlesRouter };
